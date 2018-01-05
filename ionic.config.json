@@ -1,0 +1,8 @@
+{
+  "name": "barcodeValidator",
+  "app_id": "76c6f8b0",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}

@@ -1,0 +1,799 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>
+      Validador Código de Barras
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-item>
+    <ion-label floating>Código Barras</ion-label>
+    <ion-input [(ngModel)]="codigoBarras" type="number"></ion-input>
+  </ion-item>
+  <div align="center" class="espacamento">
+    <button (click)="verificar()" ion-button color="secondary" round medium>Verificar</button>
+    <button (click)="resolver()" *ngIf="this.corrigir" ion-button color="danger" round medium>Corrigir</button>
+  </div>
+
+  <!-- Tabela 1 Auto-Verificação EAN7 -->
+  <div *ngIf="this.ativarSete">
+    <p style="text-align: center;"><b>Calculo Auto-Verificação</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{3 * this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{3 * this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{3 * this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+    </div>
+    <p class="centro"><b>SP: </b>{{this.sp}}</p>
+    <p class="centro"><b>Resto: </b>{{this.sp % 10}}</p>
+  </div>
+  <!-- Fim Tabela 1 Auto-Verificação EAN7 -->
+
+  <!-- Tabela 2 Auto-Verificação EAN7 (6 Digitos)-->
+  <div *ngIf="this.ativarSeis">
+    <p style="text-align: center;"><b>Calculo CV</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">?</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{3 * this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{3 * this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{3 * this.split[5]}}</div>
+      <div class = "col">?</div>
+    </div>
+    <p class="centro"><b>SP: </b>{{this.sp}}</p>
+    <p class="centro"><b>Resto: </b>{{this.sp % 10}}</p>
+    <p class="centro"><b>CV: </b>{{10 - (this.sp % 10)}}</p>
+
+    <hr>
+    <!-- Auto verificação -->
+    <p style="text-align: center;"><b>Calculo Auto-Verificação</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">{{10 - (this.sp % 10)}}</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{3 * this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{3 * this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{3 * this.split[5]}}</div>
+      <div class = "col">{{10 - (this.sp % 10)}}</div>
+    </div>
+    <p class="centro"><b>SP: </b>{{(this.sp) + (10-(this.sp % 10))}}</p>
+    <p class="centro"><b>Resto:</b>{{(this.sp + (10 - (this.sp % 10))) % 10}}</p>
+  </div>
+
+  <!-- Tabela 3 Auto-Verificação EAN7 (errado)-->
+  <div *ngIf="this.ativarSeteErr">
+    <p style="text-align: center;"><b>Calculo Auto-Verificação</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{3 * this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{3 * this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{3 * this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+    </div>
+    <p class="centro"><b>SP: </b>{{this.spP}}</p>
+    <p class="centro"><b>Resto: </b>{{this.spP % 10}}</p>
+    <hr>
+
+    <!-- Calculo CV -->
+    <p style="text-align: center;"><b>Calculo CV</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">?</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{3 * this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{3 * this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{3 * this.split[5]}}</div>
+      <div class = "col">?</div>
+    </div>
+    <p class="centro"><b>SP: </b>{{this.sp}}</p>
+    <p class="centro"><b>Resto: </b>{{this.sp % 10}}</p>
+    <p class="centro"><b>CV: </b>{{10 - (this.sp % 10)}}</p>
+
+    <hr>
+    <!-- Auto verificação -->
+    <p style="text-align: center;"><b>Calculo Auto-Verificação</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">{{10 - (this.sp % 10)}}</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{3 * this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{3 * this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{3 * this.split[5]}}</div>
+      <div class = "col">{{10 - (this.sp % 10)}}</div>
+    </div>
+    <p class="centro"><b>SP: </b>{{(this.sp) + (10-(this.sp % 10))}}</p>
+    <p class="centro"><b>Resto:</b>{{(this.sp + (10 - (this.sp % 10))) % 10}}</p>
+  </div>
+  <!-- Fim Tabela 3 EAN7 (errado) -->
+
+  <!-- Tabela 4 EAN13 -->
+  <div *ngIf="this.ativarTreze">
+    <p style="text-align: center;"><b>Calculo Auto-Verificação</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{this.split[11]}}</div>
+      <div class = "col">{{this.split[12]}}</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">13</div>
+      <div class = "col">12</div>
+      <div class = "col">11</div>
+      <div class = "col">10</div>
+      <div class = "col">9</div>
+      <div class = "col">8</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{3 * this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{3 * this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{3 * this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{3 * this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{3 * this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{3 * this.split[11]}}</div>
+      <div class = "col">{{this.split[12]}}</div>
+
+    </div>
+    <p class="centro"><b>SP: </b>{{this.sp}}</p>
+    <p class="centro"><b>Resto: </b>{{this.sp % 10}}</p>
+  </div>
+  <!-- Fim Tabela 4 EAN13 -->
+  <!-- Tabela 5 UPC12 -->
+  <div *ngIf="this.ativarDoze">
+    <p style="text-align: center;"><b>Calculo Auto-Verificação</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{this.split[11]}}</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">12</div>
+      <div class = "col">11</div>
+      <div class = "col">10</div>
+      <div class = "col">9</div>
+      <div class = "col">8</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{3 * this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{3 * this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{3 * this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">{{3 * this.split[6]}}</div>
+      <div class = "col">{{this.split[7]}}</div>
+      <div class = "col">{{3 * this.split[8]}}</div>
+      <div class = "col">{{this.split[9]}}</div>
+      <div class = "col">{{3 * this.split[10]}}</div>
+      <div class = "col">{{this.split[11]}}</div>
+
+    </div>
+    <p class="centro"><b>SP: </b>{{this.sp}}</p>
+    <p class="centro"><b>Resto: </b>{{this.sp % 10}}</p>
+  </div>
+  <!-- Fim tabela UPC12 -->
+  <!-- Tabela 5 EAN13(Errado) -->
+  <!-- Auto-Verificação-->
+  <div *ngIf="this.ativarTrezeErr">
+    <p style="text-align: center;"><b>Calculo Auto-Verificação</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{this.split[11]}}</div>
+      <div class = "col">{{this.split[12]}}</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">13</div>
+      <div class = "col">12</div>
+      <div class = "col">11</div>
+      <div class = "col">10</div>
+      <div class = "col">9</div>
+      <div class = "col">8</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{3 * this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{3 * this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{3 * this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{3 * this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{3 * this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{3 * this.split[11]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+    </div>
+    <p class="centro"><b>SP: </b>{{this.spP}}</p>
+    <p class="centro"><b>Resto: </b>{{this.spP % 10}}</p>
+    <hr>
+
+    <!-- Calculo CV -->
+    <p style="text-align: center;"><b>Calculo CV</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{this.split[11]}}</div>
+      <div class = "col">?</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">13</div>
+      <div class = "col">12</div>
+      <div class = "col">11</div>
+      <div class = "col">10</div>
+      <div class = "col">9</div>
+      <div class = "col">8</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{3 * this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{3 * this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{3 * this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{3 * this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{3 * this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{3 * this.split[11]}}</div>
+      <div class = "col">?</div>
+    </div>
+    <p class="centro"><b>SP: </b>{{this.sp}}</p>
+    <p class="centro"><b>Resto: </b>{{this.sp % 10}}</p>
+    <p class="centro"><b>CV: </b>{{10 - (this.sp % 10)}}</p>
+
+    <hr>
+    <!-- Auto verificação -->
+    <p style="text-align: center;"><b>Calculo Auto-Verificação</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{this.split[11]}}</div>
+      <div class = "col">{{10 - (this.sp % 10)}}</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">13</div>
+      <div class = "col">12</div>
+      <div class = "col">11</div>
+      <div class = "col">10</div>
+      <div class = "col">9</div>
+      <div class = "col">8</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{3 * this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{3 * this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{3 * this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{3 * this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{3 * this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{3 * this.split[11]}}</div>
+      <div class = "col">{{10 - (this.sp % 10)}}</div>
+    </div>
+    <p class="centro"><b>SP: </b>{{(this.sp) + (10-(this.sp % 10))}}</p>
+    <p class="centro"><b>Resto:</b>{{(this.sp + (10 - (this.sp % 10))) % 10}}</p>
+  </div>
+  <!-- Fim Tabela 5 EAN13 (errado) -->
+  <!-- Tabela 6 EAN13/UPC12 (Errado) -->
+  <!-- Auto-Verificação-->
+  <div *ngIf="this.ativarDozeErr">
+    <!-- Calculo CV -->
+    <p style="text-align: center;"><b>Calculo CV</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{this.split[11]}}</div>
+      <div class = "col">?</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">13</div>
+      <div class = "col">12</div>
+      <div class = "col">11</div>
+      <div class = "col">10</div>
+      <div class = "col">9</div>
+      <div class = "col">8</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{3 * this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{3 * this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{3 * this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{3 * this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{3 * this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{3 * this.split[11]}}</div>
+      <div class = "col">?</div>
+    </div>
+    <p class="centro"><b>SP: </b>{{this.sp}}</p>
+    <p class="centro"><b>Resto: </b>{{this.sp % 10}}</p>
+    <p class="centro"><b>CV: </b>{{10 - (this.sp % 10)}}</p>
+
+    <hr>
+    <!-- Auto verificação -->
+    <p style="text-align: center;"><b>Calculo Auto-Verificação</b></p>
+    <div class = "row">
+      <div class = "col">Código</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{this.split[11]}}</div>
+      <div class = "col">{{10 - (this.sp % 10)}}</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Posição</div>
+      <div class = "col">13</div>
+      <div class = "col">12</div>
+      <div class = "col">11</div>
+      <div class = "col">10</div>
+      <div class = "col">9</div>
+      <div class = "col">8</div>
+      <div class = "col">7</div>
+      <div class = "col">6</div>
+      <div class = "col">5</div>
+      <div class = "col">4</div>
+      <div class = "col">3</div>
+      <div class = "col">2</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">Ponderação</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+      <div class = "col">3</div>
+      <div class = "col">1</div>
+    </div>
+    <div class = "row">
+      <div class = "col">SP:</div>
+      <div class = "col">{{this.split[0]}}</div>
+      <div class = "col">{{3 * this.split[1]}}</div>
+      <div class = "col">{{this.split[2]}}</div>
+      <div class = "col">{{3 * this.split[3]}}</div>
+      <div class = "col">{{this.split[4]}}</div>
+      <div class = "col">{{3 * this.split[5]}}</div>
+      <div class = "col">{{this.split[6]}}</div>
+      <div class = "col">{{3 * this.split[7]}}</div>
+      <div class = "col">{{this.split[8]}}</div>
+      <div class = "col">{{3 * this.split[9]}}</div>
+      <div class = "col">{{this.split[10]}}</div>
+      <div class = "col">{{3 * this.split[11]}}</div>
+      <div class = "col">{{10 - (this.sp % 10)}}</div>
+    </div>
+    <p class="centro"><b>SP: </b>{{(this.sp) + (10-(this.sp % 10))}}</p>
+    <p class="centro"><b>Resto:</b>{{(this.sp + (10 - (this.sp % 10))) % 10}}</p>
+  </div>
+  <!-- Fim Tabela 6 EAN13/UPC12 (errado) -->
+</ion-content>
